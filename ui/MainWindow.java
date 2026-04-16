@@ -48,6 +48,9 @@ public class MainWindow extends JFrame {
         // Onglet 3 — Opérations bit-à-bit et décalages
         onglets.addTab("  ⛙️  Opérations binaires (AND/OR/XOR/NOT/Shift)  ", new BinairePanel());
 
+        // Onglet 4 — Encodage IEEE 754 simple precision
+        onglets.addTab("  🧮  IEEE 754 (32 bits)  ", new IEEE754Panel());
+
         root.add(onglets, BorderLayout.CENTER);
     }
 }
