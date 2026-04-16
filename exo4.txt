@@ -1,0 +1,99 @@
+# Conversion d'un nombre reel decimal en binaire avec une precision epsilon
+
+## Idee generale
+On separe le nombre reel $x$ en :
+- partie entiere $E = \lfloor |x| \rfloor$
+- partie fractionnaire $F = |x| - E$
+
+Puis :
+- on convertit $E$ en binaire par divisions successives par 2
+- on convertit $F$ en binaire par multiplications successives par 2
+- on arrete la partie fractionnaire quand l'erreur est inferieure ou egale a $\varepsilon$
+
+## Critere d'arret avec precision epsilon
+Si, apres avoir construit $k$ bits fractionnaires, la valeur binaire obtenue est $\hat{x}$,
+on continue tant que :
+
+$$
+|\,|x| - \hat{x}\,| > \varepsilon
+$$
+
+On peut aussi arreter plus simplement lorsque :
+- la fraction courante devient 0 (conversion exacte), ou
+- le poids du prochain bit devient $\le \varepsilon$.
+
+## Pseudo-code
+```text
+Algorithme DecimalVersBinaireEpsilon(x, epsilon)
+Entrees :
+    x : reel
+    epsilon : reel strictement positif
+Sortie :
+    chaine binaire approximee de x
+
+1. Si epsilon <= 0 alors
+       erreur "epsilon doit etre > 0"
+
+2. Si x = 0 alors
+       retourner "0"
+
+3. signe <- ""
+   Si x < 0 alors
+       signe <- "-"
+
+4. y <- |x|
+   E <- partie_entiere(y)
+   F <- y - E
+
+5. // Conversion de la partie entiere
+   Si E = 0 alors
+       binE <- "0"
+   Sinon
+       binE <- ""
+       Tant que E > 0 faire
+           reste <- E mod 2
+           binE <- caractere(reste) + binE
+           E <- E div 2
+       Fin Tant que
+
+6. // Conversion de la partie fractionnaire avec precision epsilon
+   binF <- ""
+   approxF <- 0
+   poids <- 1/2
+
+   Tant que F > 0 ET |(y - valeur(binE.binF))| > epsilon faire
+       F <- 2 * F
+       Si F >= 1 alors
+           binF <- binF + "1"
+           F <- F - 1
+       Sinon
+           binF <- binF + "0"
+       Fin Si
+
+       // Option de securite : si poids <= epsilon, on peut arreter
+       Si poids <= epsilon alors
+           sortir de la boucle
+       Fin Si
+       poids <- poids / 2
+   Fin Tant que
+
+7. Si binF est vide alors
+       retourner signe + binE
+   Sinon
+       retourner signe + binE + "." + binF
+```
+
+## Remarque importante
+La plupart des reels decimaux n'ont pas d'ecriture binaire finie.
+Donc l'algorithme fournit une approximation controlee par $\varepsilon$.
+
+## Exemple rapide
+Pour $x = 10.625$ et $\varepsilon = 10^{-6}$ :
+- partie entiere : $10 = 1010_2$
+- partie fractionnaire : $0.625 = 0.101_2$
+
+Resultat :
+
+$$
+10.625_{10} = 1010.101_2
+$$

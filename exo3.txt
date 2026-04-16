@@ -1,0 +1,104 @@
+Conversion en IEEE 754 (32 bits) de 29,75 et -12,15
+====================================================
+
+1. Encodage de 29,75
+--------------------
+
+Étape 1 : Convertir la partie entière et la partie fractionnaire en binaire.
+
+Partie entière : 29
+29 ÷ 2 = 14 reste 1
+14 ÷ 2 = 7  reste 0
+7 ÷ 2 = 3   reste 1
+3 ÷ 2 = 1   reste 1
+1 ÷ 2 = 0   reste 1
+Lecture des restes de bas en haut : 11101₂
+
+Partie fractionnaire : 0,75
+0,75 × 2 = 1,5  → bit 1, reste 0,5
+0,5 × 2 = 1,0   → bit 1, reste 0
+Donc 0,75₁₀ = 0,11₂
+
+Résultat : 29,75₁₀ = 11101,11₂
+
+Étape 2 : Normalisation
+Décaler la virgule pour obtenir 1,xxxx × 2ⁿ
+11101,11₂ = 1,110111 × 2⁴
+
+Étape 3 : Exposant réel et biais
+Biais pour simple précision (32 bits) = 127
+Exposant réel = 4
+Exposant stocké = 4 + 127 = 131
+
+131 en binaire sur 8 bits : 10000011₂
+
+Étape 4 : Mantisse (23 bits après la virgule)
+Le nombre normalisé : 1,110111...
+On prend les bits après la virgule : 110111
+On complète avec des 0 pour obtenir 23 bits : 11011100000000000000000
+
+Étape 5 : Bit de signe
+Positif → 0
+
+Résultat IEEE 754 (32 bits) pour 29,75 :
+0 10000011 11011100000000000000000
+
+Regroupement par octets (hexadécimal) :
+01000001 11011110 00000000 00000000
+41 DE 00 00
+
+2. Encodage de -12,15
+---------------------
+
+Étape 1 : Convertir la partie entière et la partie fractionnaire en binaire.
+
+Partie entière : 12
+12 ÷ 2 = 6 reste 0
+6 ÷ 2 = 3  reste 0
+3 ÷ 2 = 1  reste 1
+1 ÷ 2 = 0  reste 1
+Lecture des restes de bas en haut : 1100₂
+
+Partie fractionnaire : 0,15
+0,15 × 2 = 0,3  → bit 0, reste 0,3
+0,3 × 2 = 0,6   → bit 0, reste 0,6
+0,6 × 2 = 1,2   → bit 1, reste 0,2
+0,2 × 2 = 0,4   → bit 0, reste 0,4
+0,4 × 2 = 0,8   → bit 0, reste 0,8
+0,8 × 2 = 1,6   → bit 1, reste 0,6 (la séquence se répète)
+La séquence binaire est 0011 en boucle.
+Donc 0,15₁₀ = 0,001001100110011...₂
+
+Résultat : 12,15₁₀ = 1100,001001100110011...₂
+
+Étape 2 : Normalisation
+1100,00100110011...₂ = 1,100001001100110011... × 2³
+
+Étape 3 : Exposant réel et biais
+Biais = 127
+Exposant réel = 3
+Exposant stocké = 3 + 127 = 130
+
+130 en binaire sur 8 bits : 10000010₂
+
+Étape 4 : Mantisse (23 bits après la virgule)
+Le nombre normalisé : 1,1000010011001100110011...
+On prend les bits après la virgule sur 23 bits :
+10000100110011001100110
+(Les bits suivants sont "011..." donc pas d'arrondi)
+
+Étape 5 : Bit de signe
+Négatif → 1
+
+Résultat IEEE 754 (32 bits) pour -12,15 :
+1 10000010 10000100110011001100110
+
+Regroupement par octets (hexadécimal) :
+11000001 01000010 01100110 01100110
+C1 42 66 66
+
+Résumé des réponses
+===================
+
+29,75  → 0 10000011 11011100000000000000000  (hex : 41 DE 00 00)
+-12,15 → 1 10000010 10000100110011001100110  (hex : C1 42 66 66)
